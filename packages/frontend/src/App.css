@@ -289,3 +289,70 @@ input[type="text"] {
 input[type="text"]::placeholder {
   color: var(--text-muted);
 }
+
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  padding: 32px;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: var(--primary);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.drop-zone-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.drag-over .drop-zone-text {
+  color: var(--primary);
+}
+
+.paste-area {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-size: 13px;
+  resize: vertical;
+  margin-top: 8px;
+}
+
+.paste-area::placeholder {
+  color: var(--text-muted);
+}
+
+.paste-area:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.file-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+.file-name {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.file-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}

@@ -25,6 +25,10 @@ function App() {
   const [sessionName, setSessionName] = useState("");
   const [apiOk, setApiOk] = useState<boolean | null>(null);
 
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{ fileId: string; name: string; size: number }>>([]);
+  const [pasteText, setPasteText] = useState("");
+  const [dragOver, setDragOver] = useState(false);
+
   const addLog = useCallback((text: string, type = "info") => {
     setLog((prev) => [...prev, { text: `[${new Date().toISOString().slice(11, 19)}] ${text}`, type }]);
   }, []);
@@ -49,6 +53,48 @@ function App() {
       addLog("CPM loaded", "success");
     } catch (e: unknown) {
       addLog(`Error: ${e instanceof Error ? e.message : String(e)}`, "error");
+    }
+  };
+
+  const handleFileUpload = async (file: File) => {
+    if (!session) return;
+    try {
+      const content = await file.text();
+      const result = await api.uploadFile(session.sessionId, file.name, content);
+      setUploadedFiles((prev) => [...prev, { fileId: result.fileId, name: file.name, size: content.length }]);
+      addLog(`File uploaded: ${file.name} → ${result.fileId} (${content.length} bytes)`, "success");
+      const s = await api.getSession(session.sessionId);
+      setSession(s);
+    } catch (e: unknown) {
+      addLog(`Upload error: ${e instanceof Error ? e.message : String(e)}`, "error");
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const files = Array.from(e.dataTransfer.files);
+    files.forEach(handleFileUpload);
+  };
+
+  const handleFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    files.forEach(handleFileUpload);
+    e.target.value = "";
+  };
+
+  const handlePasteUpload = async () => {
+    if (!session || !pasteText.trim()) return;
+    try {
+      const name = `pasted-text-${Date.now()}.txt`;
+      const result = await api.uploadFile(session.sessionId, name, pasteText);
+      setUploadedFiles((prev) => [...prev, { fileId: result.fileId, name, size: pasteText.length }]);
+      addLog(`Text uploaded: ${name} → ${result.fileId} (${pasteText.length} chars)`, "success");
+      setPasteText("");
+      const s = await api.getSession(session.sessionId);
+      setSession(s);
+    } catch (e: unknown) {
+      addLog(`Paste upload error: ${e instanceof Error ? e.message : String(e)}`, "error");
     }
   };
 
@@ -194,13 +240,60 @@ function App() {
           {step === 1 && (
             <>
               <h2>Step 1: Upload</h2>
-              <p>Upload source and reference files. Files are identified by backend-assigned fileId.</p>
-              <div className="panel">
-                <h3>Session Files</h3>
-                <pre>{session.files.length === 0 ? "No files uploaded yet." : JSON.stringify(session.files, null, 2)}</pre>
+              <p>Upload source and reference files. Drag & drop files, pick from disk, or paste text content.</p>
+
+              <div
+                className={`drop-zone ${dragOver ? "drag-over" : ""}`}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={handleDrop}
+              >
+                <div className="drop-zone-text">
+                  {dragOver ? "Drop file here" : "Drag & drop files here"}
+                </div>
+                <div style={{ margin: "8px 0", color: "var(--text-muted)", fontSize: 12 }}>or</div>
+                <label className="btn btn-secondary" style={{ cursor: "pointer" }}>
+                  Choose File
+                  <input type="file" onChange={handleFilePick} style={{ display: "none" }} multiple accept=".txt,.pdf,.docx,.pptx,.csv,.json,.md" />
+                </label>
               </div>
+
+              <div className="panel" style={{ marginTop: 12 }}>
+                <h3>Paste text content</h3>
+                <textarea
+                  className="paste-area"
+                  placeholder="Paste or type text content here..."
+                  value={pasteText}
+                  onChange={(e) => setPasteText(e.target.value)}
+                  rows={5}
+                />
+                <div className="btn-group">
+                  <button className="btn btn-primary" onClick={handlePasteUpload} disabled={!pasteText.trim()}>
+                    Upload Pasted Text
+                  </button>
+                </div>
+              </div>
+
+              <div className="panel" style={{ marginTop: 12 }}>
+                <h3>Session Files ({session.files.length})</h3>
+                {session.files.length === 0 ? (
+                  <pre>No files uploaded yet.</pre>
+                ) : (
+                  <div>
+                    {session.files.map((f) => (
+                      <div key={f.fileId} className="file-row">
+                        <span className="file-name">{f.displayName}</span>
+                        <span className="file-meta">{f.fileId} · {f.sizeBytes} bytes · {f.uploadStatus}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <div className="btn-group">
-                <button className="btn btn-primary" onClick={() => setStep(2)}>Continue to Page Map</button>
+                <button className="btn btn-primary" onClick={() => setStep(2)} disabled={session.files.length === 0}>
+                  Continue to Page Map
+                </button>
               </div>
             </>
           )}

@@ -108,6 +108,32 @@ export function getSession(sessionId: string): Session | undefined {
   return sessions.get(sessionId);
 }
 
+export function addFile(
+  sessionId: string,
+  displayName: string,
+  mimeType: string,
+  sizeBytes: number,
+  sourceType: "primary" | "reference"
+): SessionFile | undefined {
+  const session = sessions.get(sessionId);
+  if (!session) return undefined;
+  const fileId = `fil_${uuidv4().replace(/-/g, "").slice(0, 12)}`;
+  const sha256 = uuidv4().replace(/-/g, "");
+  const file: SessionFile = {
+    fileId,
+    displayName,
+    mimeType,
+    sizeBytes,
+    sha256,
+    sourceType,
+    uploadStatus: "ready",
+  };
+  session.files.push(file);
+  session.updatedAt = now();
+  session.checkpoints.upload = { status: "ready", updatedAt: now() };
+  return file;
+}
+
 export function getCpm(sessionId: string): CpmState | undefined {
   return cpmStore.get(sessionId);
 }

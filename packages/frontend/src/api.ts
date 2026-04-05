@@ -85,6 +85,21 @@ export const api = {
   getSession: (id: string) =>
     request<Session>(`/v1/import-wizard/sessions/${id}`),
 
+  uploadFile: (sessionId: string, displayName: string, content: string, kind: "source" | "reference" = "source") =>
+    request<{ fileId: string; checksum: string; status: string }>(
+      `/v1/import-wizard/sessions/${sessionId}/files`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          displayName,
+          content,
+          mimeType: "text/plain",
+          sizeBytes: new TextEncoder().encode(content).length,
+          kind,
+        }),
+      }
+    ),
+
   getCpm: (sessionId: string) =>
     request<Record<string, unknown>>(`/v1/import-wizard/sessions/${sessionId}/cpm`),
 

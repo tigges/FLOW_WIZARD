@@ -26,5 +26,34 @@ export function sessionRoutes(): Router {
     }
   );
 
+  router.post(
+    "/v1/import-wizard/sessions/:sessionId/files",
+    (req: Request, res: Response) => {
+      const sessionId = param(req, "sessionId");
+      const { displayName, mimeType, sizeBytes, content, kind } = req.body;
+
+      if (!displayName) {
+        res.status(400).json({ error: "displayName is required" });
+        return;
+      }
+
+      const sourceType = kind === "reference" ? "reference" as const : "primary" as const;
+      const size = sizeBytes || (content ? new TextEncoder().encode(content).length : 0);
+      const mime = mimeType || "text/plain";
+
+      const file = store.addFile(sessionId, displayName, mime, size, sourceType);
+      if (!file) {
+        res.status(404).json({ error: "session_not_found" });
+        return;
+      }
+
+      res.status(201).json({
+        fileId: file.fileId,
+        checksum: file.sha256,
+        status: file.uploadStatus,
+      });
+    }
+  );
+
   return router;
 }
