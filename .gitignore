@@ -1,2 +1,6 @@
 node_modules/
 docs/api-reference.html
+packages/backend/node_modules/
+packages/backend/dist/
+packages/frontend/node_modules/
+packages/frontend/dist/
