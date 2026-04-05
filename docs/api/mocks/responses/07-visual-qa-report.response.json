@@ -1,0 +1,39 @@
+{
+  "reportId": "vqa_01HZXB4FG3E6Q7N8R9T0U1V2W3",
+  "sessionId": "ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH",
+  "previewJobId": "job_prev_01HZXB3SK8NV4T8SX2Q11Q5Y5G",
+  "summary": {
+    "score": 0.94,
+    "passed": true,
+    "totalFindings": 2,
+    "criticalFindings": 0
+  },
+  "findings": [
+    {
+      "findingId": "fnd_001",
+      "severity": "warning",
+      "message": "Minor spacing mismatch in hero subtitle.",
+      "target": {
+        "kind": "component",
+        "id": "cmp_hero_2"
+      },
+      "evidence": [
+        {
+          "label": "diff-overlay",
+          "url": "https://cdn.example.com/previews/ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH/diff-1.png"
+        }
+      ],
+      "suggestedFix": "Adjust top margin by 4px."
+    },
+    {
+      "findingId": "fnd_002",
+      "severity": "info",
+      "message": "Icon style differs from source but remains within tolerance.",
+      "target": {
+        "kind": "asset",
+        "id": "ast_icon_pack_12"
+      }
+    }
+  ],
+  "generatedAt": "2026-04-05T16:18:26Z"
+}

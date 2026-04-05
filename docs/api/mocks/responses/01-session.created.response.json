@@ -1,0 +1,16 @@
+{
+  "sessionId": "ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH",
+  "status": "active",
+  "currentStep": 1,
+  "createdAt": "2026-04-05T10:00:00Z",
+  "updatedAt": "2026-04-05T10:00:00Z",
+  "files": [],
+  "checkpoints": {
+    "upload": { "status": "in_progress", "updatedAt": "2026-04-05T10:00:00Z" },
+    "pageMap": { "status": "not_started", "updatedAt": "2026-04-05T10:00:00Z" },
+    "settings": { "status": "not_started", "updatedAt": "2026-04-05T10:00:00Z" },
+    "review": { "status": "not_started", "updatedAt": "2026-04-05T10:00:00Z" },
+    "preview": { "status": "not_started", "updatedAt": "2026-04-05T10:00:00Z" },
+    "complete": { "status": "not_started", "updatedAt": "2026-04-05T10:00:00Z" }
+  }
+}

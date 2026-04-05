@@ -1,0 +1,22 @@
+{
+  "baseRevision": 7,
+  "operations": [
+    {
+      "op": "replace",
+      "path": "/nodes/2/name",
+      "value": "Pricing Overview"
+    },
+    {
+      "op": "add",
+      "path": "/nodes/-",
+      "value": {
+        "id": "cmp_hero_2",
+        "type": "component",
+        "name": "Hero Banner",
+        "props": {
+          "variant": "split"
+        }
+      }
+    }
+  ]
+}

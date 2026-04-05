@@ -1,0 +1,19 @@
+{
+  "sessionId": "ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH",
+  "revision": 3,
+  "providerPolicy": {
+    "strategy": "balanced",
+    "qualityTier": "high",
+    "constraints": {
+      "maxLatencyMs": 5000,
+      "maxCostUsd": 2.5,
+      "allowFallback": true
+    }
+  },
+  "options": {
+    "pageDetectionMode": "auto",
+    "theme": "source-aware",
+    "namingStyle": "human-readable"
+  },
+  "updatedAt": "2026-04-05T12:05:55Z"
+}

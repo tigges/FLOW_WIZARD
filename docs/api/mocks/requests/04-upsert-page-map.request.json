@@ -1,0 +1,36 @@
+{
+  "pageMapId": "pm_0AcX12fQ",
+  "sessionId": "ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH",
+  "version": 2,
+  "status": "validated",
+  "pages": [
+    {
+      "pageId": "pag_001",
+      "fileId": "fil_01HZXA0Q8A8F9M9M6Q5Q9E8YJ1",
+      "index": 1,
+      "role": "cover",
+      "included": true,
+      "tags": ["title"],
+      "notes": "Marketing cover page"
+    },
+    {
+      "pageId": "pag_002",
+      "fileId": "fil_01HZXA0Q8A8F9M9M6Q5Q9E8YJ1",
+      "index": 2,
+      "role": "body",
+      "included": true,
+      "tags": ["features"],
+      "notes": "Feature detail"
+    },
+    {
+      "pageId": "pag_101",
+      "fileId": "fil_01HZXA2R8AXJ4H7G3Q1D8E2YB3",
+      "index": 1,
+      "role": "reference",
+      "included": true,
+      "tags": ["brand"],
+      "notes": "Brand reference deck"
+    }
+  ],
+  "updatedAt": "2026-04-05T10:10:00Z"
+}

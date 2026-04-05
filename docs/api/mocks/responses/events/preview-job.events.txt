@@ -1,0 +1,14 @@
+event: job.accepted
+data: {"jobId":"job_prev_001","type":"preview","state":"queued","sessionId":"ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH"}
+
+event: job.progress
+data: {"jobId":"job_prev_001","type":"preview","state":"running","progress":0.35,"message":"Rendering preview pages"}
+
+event: preview.graph.ready
+data: {"sessionId":"ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH","revision":8}
+
+event: visual-qa.ready
+data: {"reportId":"vqa_001","score":0.93,"passed":true}
+
+event: job.completed
+data: {"jobId":"job_prev_001","type":"preview","state":"succeeded"}

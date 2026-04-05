@@ -1,0 +1,8 @@
+event: job.accepted
+data: {"jobId":"job_compile_0001","type":"compile","state":"queued","sessionId":"ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH"}
+
+event: job.progress
+data: {"jobId":"job_compile_0001","type":"compile","state":"running","progress":0.44,"message":"assembling export package"}
+
+event: job.completed
+data: {"jobId":"job_compile_0001","type":"compile","state":"succeeded","artifactManifestId":"amf_0001","sessionId":"ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH"}

@@ -1,0 +1,32 @@
+{
+  "sessionId": "ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH",
+  "compileJobId": "job_cmp_01J0A3DMMRDKT55VWTN6XPVC8T",
+  "status": "succeeded",
+  "artifacts": [
+    {
+      "artifactId": "art_01J0A4B6R31PHFHFW3GYJQ3H8Y",
+      "kind": "package",
+      "fileName": "import-wizard-output.zip",
+      "sizeBytes": 1438221,
+      "checksumSha256": "9a1ca6d0bc336cae95c519f84400f740f2f3802f0225ed8c9444f511693159ef",
+      "downloadUrl": "https://api.example.com/downloads/art_01J0A4B6R31PHFHFW3GYJQ3H8Y"
+    },
+    {
+      "artifactId": "art_01J0A4BG8N4NTY6YNE4P6HMNDM",
+      "kind": "manifest",
+      "fileName": "manifest.json",
+      "sizeBytes": 3422,
+      "checksumSha256": "fd1888d688f31daa2a4eec38384fc612c2fe0f8d8ec95a23e3279f27f719422f",
+      "downloadUrl": "https://api.example.com/downloads/art_01J0A4BG8N4NTY6YNE4P6HMNDM"
+    },
+    {
+      "artifactId": "art_01J0A4BSMCK38WNRV4YJ8R56A0",
+      "kind": "report",
+      "fileName": "visual-qa-report.json",
+      "sizeBytes": 9180,
+      "checksumSha256": "56d67ea5eae1403123ca8c564973f2621944af744e7eb95f3725816c68fdf4aa",
+      "downloadUrl": "https://api.example.com/downloads/art_01J0A4BSMCK38WNRV4YJ8R56A0"
+    }
+  ],
+  "createdAt": "2026-04-05T12:45:20.000Z"
+}

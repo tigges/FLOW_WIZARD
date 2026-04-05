@@ -1,0 +1,9 @@
+{
+  "endpoint": "POST /v1/import-wizard/sessions/ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH/files",
+  "contentType": "multipart/form-data",
+  "fields": {
+    "kind": "source",
+    "file": "<binary:pricing-deck.pdf>"
+  },
+  "notes": "Step 1 upload source file"
+}

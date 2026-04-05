@@ -1,0 +1,36 @@
+{
+  "pageMapId": "pm_A1B2C3D4",
+  "sessionId": "ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH",
+  "version": 1,
+  "status": "validated",
+  "pages": [
+    {
+      "pageId": "pg_001",
+      "fileId": "fil_01SRCABCDEF12",
+      "index": 1,
+      "role": "cover",
+      "included": true,
+      "tags": ["intro"],
+      "notes": "Cover page"
+    },
+    {
+      "pageId": "pg_002",
+      "fileId": "fil_01SRCABCDEF12",
+      "index": 2,
+      "role": "body",
+      "included": true,
+      "tags": ["pricing"],
+      "notes": "Pricing section"
+    },
+    {
+      "pageId": "pg_003",
+      "fileId": "fil_01SRCABCDEF12",
+      "index": 3,
+      "role": "reference",
+      "included": true,
+      "tags": ["references"],
+      "notes": "Reference appendix"
+    }
+  ],
+  "updatedAt": "2026-04-05T11:18:40Z"
+}

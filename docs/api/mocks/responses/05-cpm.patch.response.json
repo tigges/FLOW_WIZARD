@@ -1,0 +1,70 @@
+{
+  "revision": 8,
+  "cpm": {
+    "sessionId": "ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH",
+    "revision": 8,
+    "nodes": [
+      {
+        "id": "page_001",
+        "type": "page",
+        "name": "Cover",
+        "props": {
+          "title": "Welcome"
+        }
+      },
+      {
+        "id": "page_002",
+        "type": "page",
+        "name": "Pricing Overview",
+        "props": {
+          "title": "Pricing Overview"
+        }
+      },
+      {
+        "id": "cmp_hero_2",
+        "type": "component",
+        "name": "Hero Section",
+        "props": {
+          "variant": "centered"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "from": "page_002",
+        "to": "cmp_hero_2",
+        "relation": "contains"
+      }
+    ],
+    "lastPatchedAt": "2026-04-05T12:12:42Z",
+    "patchAudit": [
+      {
+        "op": "replace",
+        "path": "/nodes/1/name",
+        "value": "Pricing Overview"
+      },
+      {
+        "op": "add",
+        "path": "/nodes/-",
+        "value": {
+          "id": "cmp_hero_2",
+          "type": "component",
+          "name": "Hero Section",
+          "props": {
+            "variant": "centered"
+          }
+        }
+      }
+    ]
+  },
+  "operationResults": [
+    {
+      "index": 0,
+      "status": "applied"
+    },
+    {
+      "index": 1,
+      "status": "applied"
+    }
+  ]
+}
