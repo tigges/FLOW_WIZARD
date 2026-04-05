@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Import Wizard Editor Wireframe</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a31;
+      --panel-alt: #1a2545;
+      --text: #e9edff;
+      --muted: #9fb1e8;
+      --accent: #6ea8ff;
+      --ok: #37c98a;
+      --warn: #ffcb6b;
+      --danger: #ff7f7f;
+      --line: #2a3765;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header, footer {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+    }
+    footer {
+      border-top: 1px solid var(--line);
+      border-bottom: 0;
+      position: sticky;
+      bottom: 0;
+    }
+    .title { font-size: 18px; font-weight: 700; }
+    .sub { color: var(--muted); font-size: 13px; }
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr 360px;
+      min-height: calc(100vh - 112px);
+    }
+    .panel {
+      border-right: 1px solid var(--line);
+      padding: 16px;
+      background: var(--panel);
+    }
+    .panel:last-child {
+      border-right: 0;
+      border-left: 1px solid var(--line);
+      background: var(--panel-alt);
+    }
+    h2 { margin: 8px 0 10px; font-size: 15px; }
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .step strong { display: block; margin-bottom: 4px; }
+    .step.active { border-color: var(--accent); }
+    .step.done { border-color: var(--ok); }
+    .chip {
+      display: inline-block;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      margin-right: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .main {
+      padding: 16px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 12px;
+    }
+    .bar, .card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: var(--panel-alt);
+    }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .label { color: var(--muted); font-size: 12px; }
+    .value { font-size: 13px; margin: 3px 0 8px; }
+    code {
+      display: block;
+      background: #0d1430;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 12px;
+      white-space: pre-wrap;
+      color: #c8d7ff;
+    }
+    .right-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #111a38;
+      font-size: 13px;
+    }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .danger { color: var(--danger); }
+    .actions button {
+      border: 1px solid var(--line);
+      background: #101938;
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-right: 8px;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">Import Wizard (Frontend-first contract UI)</div>
+    <div class="sub">Session: ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH | Step 4 Review</div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel">
+      <h2>Wizard Steps</h2>
+      <div class="step done"><strong>1. Upload</strong>Files uploaded and normalized to fileId.</div>
+      <div class="step done"><strong>2. Page map</strong>Page roles and ordering persisted.</div>
+      <div class="step done"><strong>3. Settings</strong>providerPolicy accepted by backend.</div>
+      <div class="step active"><strong>4. Review</strong>CPM edits via patch operations.</div>
+      <div class="step"><strong>5. Preview + Visual QA</strong>Preview-only job; no extraction.</div>
+      <div class="step"><strong>6. Complete</strong>Compile/export artifact package.</div>
+    </aside>
+
+    <section class="main">
+      <div class="bar">
+        <span class="chip">providerPolicy: balanced</span>
+        <span class="chip">cpmRevision: 7</span>
+        <span class="chip">settingsRevision: 3</span>
+        <span class="chip">syncStatus: in-contract</span>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="label">Incoming edit model</div>
+          <div class="value">Patch operations against CPM</div>
+          <code>[
+  { "op": "replace", "path": "/pages/2/title", "value": "Pricing Overview" },
+  { "op": "add", "path": "/components/-", "value": { "id": "cmp_hero_2", "type": "hero" } }
+]</code>
+        </div>
+        <div class="card">
+          <div class="label">Guardrails</div>
+          <div class="value"><span class="ok">Step 5 is preview-only.</span><br>
+            <span class="ok">No direct model keys in client payloads.</span><br>
+            <span class="ok">Local references mapped by fileId.</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Step transition rule</div>
+        <code>
+if (step === 4 && patchOps.valid) applyPatch(cpm);
+if (step === 5) runPreviewAndVisualQA(cpmRevision, settingsRevision);
+if (step === 6 && previewApproved) runCompileExport();
+        </code>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <h2>Live Job Feed</h2>
+      <div class="right-item"><strong>preview_job_293</strong><br><span class="warn">queued</span> -> running</div>
+      <div class="right-item"><strong>vqa_job_294</strong><br><span class="ok">succeeded</span> score: 0.94</div>
+      <div class="right-item"><strong>compile_job_295</strong><br><span class="sub">blocked until preview approved</span></div>
+      <h2>Actions</h2>
+      <div class="actions">
+        <button>Save Review Patch</button>
+        <button>Run Preview + QA</button>
+        <button>Approve for Compile</button>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <div class="sub">Contract checkpoints: schema-valid payloads, monotonic revisions, append-only operation log.</div>
+  </footer>
+</body>
+</html>
