@@ -11,6 +11,10 @@
     "validate:schemas": "node scripts/validate-schemas.js",
     "validate:mocks": "node scripts/validate-mocks.js",
     "test": "npm run lint:openapi && npm run validate:schemas && npm run validate:mocks",
+    "typecheck": "cd packages/backend && npx tsc --noEmit && cd ../frontend && npx tsc --noEmit",
+    "build:frontend": "cd packages/frontend && npm run build",
+    "build:backend": "cd packages/backend && npx tsc",
+    "build": "npm run build:frontend && npm run build:backend",
     "docs:build": "redocly build-docs docs/api/openapi/import-wizard-api.v1.yaml -o docs/api-reference.html",
     "docs:serve": "http-server docs -p 8080 -c-1 --cors"
   },
