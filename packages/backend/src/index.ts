@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import { existsSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 import { loadConfig } from "./config.js";
 import { requestLogger, errorHandler } from "./middleware/common.js";
 import { healthRoutes } from "./routes/health.js";
@@ -10,6 +13,7 @@ import { cpmRoutes } from "./routes/cpm.js";
 import { aiRoutes } from "./routes/ai.js";
 import { jobRoutes } from "./routes/jobs.js";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const config = loadConfig();
 const app = express();
 
@@ -24,6 +28,14 @@ app.use(sessionRoutes());
 app.use(cpmRoutes());
 app.use(aiRoutes());
 app.use(jobRoutes());
+
+const publicDir = join(__dirname, "..", "public");
+if (existsSync(publicDir)) {
+  app.use(express.static(publicDir));
+  app.get("*", (_req, res) => {
+    res.sendFile(join(publicDir, "index.html"));
+  });
+}
 
 app.use(errorHandler);
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import "./App.css";
-import { api, Session, ProviderCapabilities, AiEstimate, PatchResult, Job } from "./api";
+import { api } from "./api";
+import type { Session, ProviderCapabilities, AiEstimate, PatchResult, Job } from "./api";
 
 const STEPS = [
   { num: 1, label: "Upload" },
