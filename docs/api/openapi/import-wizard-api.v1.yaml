@@ -19,6 +19,7 @@ tags:
   - name: PageMap
   - name: Settings
   - name: CPM
+  - name: AIUsage
   - name: Jobs
   - name: Artifacts
 paths:
@@ -168,6 +169,138 @@ paths:
             application/json:
               schema:
                 $ref: "../schemas/settings.schema.json"
+
+  /v1/import-wizard/sessions/{sessionId}/ai/estimate:
+    post:
+      tags: [AIUsage]
+      summary: Estimate AI token/cost impact before execution
+      description: |
+        Returns a preflight estimate for external/internal AI calls for a specific action.
+        UI must show this estimate and capture explicit user confirmation before execution.
+      operationId: estimateAiUsage
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  enum: [extract, patch-assist, preview, visual-qa, compile, export]
+                providerPolicy:
+                  type: object
+                context:
+                  type: object
+      responses:
+        "200":
+          description: AI usage estimate
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - estimateId
+                  - action
+                  - provider
+                  - modelFamily
+                  - estimatedPromptTokens
+                  - estimatedCompletionTokens
+                  - estimatedTotalTokens
+                  - estimatedCostUsd
+                  - currency
+                  - expiresAt
+                properties:
+                  estimateId:
+                    type: string
+                  action:
+                    type: string
+                  provider:
+                    type: string
+                    enum: [gemini, copilot, internal]
+                  modelFamily:
+                    type: string
+                  estimatedPromptTokens:
+                    type: integer
+                    minimum: 0
+                  estimatedCompletionTokens:
+                    type: integer
+                    minimum: 0
+                  estimatedTotalTokens:
+                    type: integer
+                    minimum: 0
+                  estimatedCostUsd:
+                    type: number
+                    minimum: 0
+                  currency:
+                    type: string
+                    enum: [USD]
+                  expiresAt:
+                    type: string
+                    format: date-time
+
+  /v1/import-wizard/sessions/{sessionId}/ai/confirm:
+    post:
+      tags: [AIUsage]
+      summary: Confirm AI usage and execute action
+      description: |
+        Executes an AI-backed action only after explicit user confirmation linked to an estimate.
+        Backend must reject calls without valid estimate confirmation.
+      operationId: confirmAiUsage
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [estimateId, action, userConfirmation]
+              properties:
+                estimateId:
+                  type: string
+                action:
+                  type: string
+                  enum: [extract, patch-assist, preview, visual-qa, compile, export]
+                userConfirmation:
+                  type: object
+                  additionalProperties: false
+                  required: [confirmed, confirmedAt, actorType]
+                  properties:
+                    confirmed:
+                      type: boolean
+                      const: true
+                    confirmedAt:
+                      type: string
+                      format: date-time
+                    actorType:
+                      type: string
+                      enum: [user, admin]
+                    actorId:
+                      type: string
+      responses:
+        "202":
+          description: AI action accepted for execution
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [accepted, action, executionId]
+                properties:
+                  accepted:
+                    type: boolean
+                    const: true
+                  action:
+                    type: string
+                  executionId:
+                    type: string
 
   /v1/import-wizard/sessions/{sessionId}/cpm:
     get:

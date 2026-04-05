@@ -1,0 +1,21 @@
+{
+  "sessionId": "ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH",
+  "required": true,
+  "status": "granted",
+  "scope": {
+    "providers": ["gemini", "copilot"],
+    "operations": ["preview", "compile"],
+    "expiresAt": "2026-04-05T18:00:00Z"
+  },
+  "costControls": {
+    "mustConfirmEachCall": true,
+    "maxEstimatedCostUsdPerCall": 0.1,
+    "maxEstimatedTokensPerCall": 15000,
+    "blockOnUnknownPrice": true
+  },
+  "lastPrompt": {
+    "message": "This action may consume tokens on Gemini. Estimated <= 8k tokens and <= $0.04. Continue?",
+    "acceptedAt": "2026-04-05T16:41:00Z",
+    "acceptedBy": "user_123"
+  }
+}

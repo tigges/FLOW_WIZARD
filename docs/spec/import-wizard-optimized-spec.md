@@ -110,6 +110,23 @@ The frontend can move faster than backend implementation, but all integration be
   - replay pending operations
   - continue from last valid checkpoint
 
+## 5.1 AI cost and consent guardrails (required)
+- Any AI-backed action (for example page classification, text import enrichment, preview scoring assistance) must be **explicitly consented** before token usage.
+- Consent must be captured per session and per provider (`gemini`, `copilot`, other) with:
+  - estimated max tokens,
+  - estimated max cost ceiling (if known),
+  - selected provider policy mode,
+  - timestamp and actor.
+- Default behavior when consent is missing:
+  - API returns `412 PRECONDITION_REQUIRED` with `code=consent_required`.
+  - UI must block action and show confirmation UI.
+- UI must show a preflight confirmation for any request that may trigger paid usage:
+  - "This action may consume external AI tokens. Continue?"
+- UI must show post-call usage telemetry:
+  - provider used,
+  - tokens consumed (prompt/completion/total when available),
+  - estimated or final billed amount.
+
 ## 6. Auditability and drift prevention
 - All frontend integration changes must:
   1. update OpenAPI or schema docs first,
@@ -132,3 +149,5 @@ The frontend can move faster than backend implementation, but all integration be
 - [ ] Step 5 preview-only semantics enforced
 - [ ] `providerPolicy` abstraction used end-to-end
 - [ ] file reference behavior uses uploaded `fileId`
+- [ ] AI token spend requires explicit user consent prior to request execution
+- [ ] Usage/cost telemetry visible to both operator and end user after each AI action

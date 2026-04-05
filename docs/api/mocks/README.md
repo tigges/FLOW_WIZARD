@@ -25,3 +25,4 @@ All fixtures align to:
 2. Step 4 edits use ordered patch operations over CPM.
 3. Model selection is represented by `providerPolicy`, not direct model keys.
 4. Local references are uploaded and compared by `fileId`.
+5. Any token-billed provider call requires explicit per-action user consent.

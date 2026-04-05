@@ -1,6 +1,12 @@
 {
   "sessionId": "ses_9Af53kLmP2",
   "revision": 3,
+  "aiUsageGuard": {
+    "requireUserConsentBeforeExecution": true,
+    "showEstimateBeforeExecution": true,
+    "hardBlockWithoutConsent": true,
+    "consentTtlMinutes": 30
+  },
   "providerPolicy": {
     "strategy": "balanced",
     "qualityTier": "high",
@@ -9,6 +15,10 @@
       "maxCostUsd": 7.5,
       "allowFallback": true
     }
+  },
+  "providerPreferences": {
+    "priorityOrder": ["gemini", "copilot"],
+    "allowProviderFallback": true
   },
   "options": {
     "pageDetectionMode": "auto",

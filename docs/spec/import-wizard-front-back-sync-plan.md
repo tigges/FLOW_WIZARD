@@ -18,6 +18,10 @@ Keep FLOW_WIZARD as the single source of truth while frontend delivery leads and
    - Step 5 is preview-only and visual QA, not extraction.
    - Model selection uses `providerPolicy`, never direct client model keys.
    - `file:///...` references are uploaded and resolved to `fileId` before comparison.
+5. **Spend transparency is required:** no AI provider call may execute unless:
+   - the initiating actor (user or admin-configured policy) explicitly approved the call scope,
+   - estimated token and cost ranges are displayed pre-call,
+   - call-level usage metadata is stored and retrievable.
 
 ## Contract ownership matrix
 | Area | Primary owner | Secondary owner | Review required |
@@ -39,10 +43,12 @@ Keep FLOW_WIZARD as the single source of truth while frontend delivery leads and
 1. **Static validation gate**
    - Validate OpenAPI document syntax.
    - Validate mock responses against JSON schemas.
+   - Validate `x-requires-user-consent` on all endpoints that can consume paid tokens.
 2. **Workflow gate**
    - Block merge when mocks and contracts are out of sync.
 3. **Runtime gate**
    - Backend response contract tests run against v1 schemas.
+   - Backend rejects any AI-invoking request without valid consent context.
 
 ## Integration timeline by capability
 ### Phase A: Frontend unblock (mock-backed)
@@ -71,3 +77,4 @@ Keep FLOW_WIZARD as the single source of truth while frontend delivery leads and
 
 ## Definition of done
 - Frontend and backend teams can run the same six-step flow using either mocks or live API without payload-shape changes.
+- Every AI token-spend action is preceded by explicit user or policy consent and emits cost/usage telemetry.

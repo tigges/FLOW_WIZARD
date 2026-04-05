@@ -25,9 +25,18 @@
       "additionalProperties": false,
       "required": [
         "strategy",
-        "qualityTier"
+        "qualityTier",
+        "provider"
       ],
       "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "gemini",
+            "copilot",
+            "auto"
+          ]
+        },
         "strategy": {
           "type": "string",
           "enum": [
@@ -48,6 +57,9 @@
         "constraints": {
           "type": "object",
           "additionalProperties": false,
+          "required": [
+            "requireUserConfirmation"
+          ],
           "properties": {
             "maxLatencyMs": {
               "type": "integer",
@@ -59,6 +71,11 @@
             },
             "allowFallback": {
               "type": "boolean"
+            },
+            "requireUserConfirmation": {
+              "type": "boolean",
+              "const": true,
+              "description": "Must remain true to prevent unconfirmed token-spend calls."
             }
           }
         }

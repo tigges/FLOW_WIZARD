@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/tigges/FLOW_WIZARD/main/docs/api/schemas/ai-usage-consent.schema.json",
+  "title": "AI Usage Consent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sessionId",
+    "consentId",
+    "scope",
+    "providerPolicy",
+    "estimatedUsage",
+    "costNotice",
+    "approval",
+    "expiresAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "sessionId": {
+      "type": "string",
+      "pattern": "^ses_[A-Za-z0-9_-]{8,}$"
+    },
+    "consentId": {
+      "type": "string",
+      "pattern": "^con_[A-Za-z0-9_-]{8,}$"
+    },
+    "scope": {
+      "type": "string",
+      "enum": ["preview", "compile", "all"]
+    },
+    "providerPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy", "qualityTier"],
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["balanced", "cost-first", "quality-first", "latency-first"]
+        },
+        "qualityTier": {
+          "type": "string",
+          "enum": ["standard", "high", "max"]
+        }
+      }
+    },
+    "estimatedUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inputTokens", "outputTokens", "maxCostUsd", "currency"],
+      "properties": {
+        "inputTokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "outputTokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxCostUsd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "const": "USD"
+        }
+      }
+    },
+    "costNotice": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approved", "approvedBy", "approvedAt"],
+      "properties": {
+        "approved": {
+          "type": "boolean"
+        },
+        "approvedBy": {
+          "type": "string",
+          "enum": ["owner", "workspace-user", "end-user"]
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "consentId": "con_01J0K42N0RMX2H2QHE4R6WNQJV",
+  "scope": "preview",
+  "action": "confirm",
+  "budgetLimitUsd": 3.5,
+  "maxTokenEstimate": 120000,
+  "providerPreference": "gemini",
+  "expiresAt": "2026-04-06T12:30:00Z"
+}
