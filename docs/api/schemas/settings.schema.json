@@ -26,7 +26,9 @@
       "required": [
         "strategy",
         "qualityTier",
-        "provider"
+        "provider",
+        "capabilityVersion",
+        "selectionSource"
       ],
       "properties": {
         "provider": {
@@ -36,6 +38,17 @@
             "copilot",
             "auto"
           ]
+        },
+        "capabilityVersion": {
+          "type": "string",
+          "description": "Version returned by backend capability endpoint that frontend used to render choices."
+        },
+        "selectionSource": {
+          "type": "string",
+          "enum": [
+            "backend-capabilities"
+          ],
+          "description": "Frontend must use backend-provided capabilities, not hardcoded guesses."
         },
         "strategy": {
           "type": "string",
@@ -87,7 +100,8 @@
       "required": [
         "pageDetectionMode",
         "theme",
-        "namingStyle"
+        "namingStyle",
+        "moderationMode"
       ],
       "properties": {
         "pageDetectionMode": {
@@ -110,6 +124,14 @@
             "slug",
             "human-readable"
           ]
+        },
+        "moderationMode": {
+          "type": "string",
+          "enum": [
+            "development-human-in-loop",
+            "production-view-only"
+          ],
+          "description": "Development mode allows human moderation of cluster priority/name/selection in steps 5 and 6."
         }
       }
     },

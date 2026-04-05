@@ -7,14 +7,14 @@
 - Source of truth: This repository
 
 ## 1. Goal
-Provide a deterministic, frontend-first import wizard that turns source files into a compiled artifact package through a six-step flow:
+Provide a deterministic, frontend-first import wizard that turns source files into validated outputs through a six-step flow:
 
 1. Upload
 2. Page map
 3. Settings
 4. Review (CPM patch)
-5. Preview + Visual QA
-6. Complete (compile/export)
+5. Preview + Visual QA + Moderation
+6. Pre-Export Gate (development) / Complete (production)
 
 The frontend can move faster than backend implementation, but all integration behavior must map to stable API contracts in `docs/api/openapi` and `docs/api/schemas`.
 
@@ -22,7 +22,7 @@ The frontend can move faster than backend implementation, but all integration be
 1. **Contract-first integration:** UI behavior is driven by OpenAPI + JSON Schema contracts.
 2. **Step boundaries are strict:** each step has explicit exit criteria.
 3. **Deterministic editing:** Step 4 uses patch operations over CPM, never ad-hoc full-document overwrite from the UI.
-4. **Preview is validation, not extraction:** Step 5 validates output quality only.
+4. **Preview is validation + moderation:** Step 5 validates output quality and supports human moderation controls.
 5. **Provider abstraction:** UI sends provider policy hints, not direct model identifiers.
 6. **File identity over path identity:** all local references are uploaded and compared via `fileId`.
 
@@ -44,6 +44,10 @@ The frontend can move faster than backend implementation, but all integration be
 - Required behavior:
   - local references are uploaded first-class and receive a backend `fileId`
   - client compares references by `fileId`, never local URI string
+  - current phase assumption: each source file is uploaded once per session
+- Near-term extension behavior:
+  - if a previously processed file appears inside a larger upload, backend returns `overlapCandidates`
+  - user must choose an override strategy (`keep-existing`, `replace-with-new`, `merge-with-priority`)
 - Exit criteria:
   - session exists
   - every selected file has `fileId`, checksum, and upload status `ready`
@@ -64,6 +68,7 @@ The frontend can move faster than backend implementation, but all integration be
   - `providerPolicy` object
 - Required behavior:
   - UI does not send direct model keys (for example `gpt-4.1`, `claude-sonnet-*`)
+  - frontend does not guess model/provider options; backend provides option catalog per session
   - settings changes are versioned per session
 - Exit criteria:
   - persisted settings revision with backend acceptance
@@ -78,27 +83,34 @@ The frontend can move faster than backend implementation, but all integration be
 - Exit criteria:
   - latest CPM revision applied with operation log and conflict status
 
-### Step 5: Preview + Visual QA
+### Step 5: Preview + Visual QA + Moderation
 - Inputs:
   - frozen CPM revision from Step 4
   - settings revision from Step 3
 - Required behavior:
   - no primary extraction is performed in this step
-  - backend generates preview graph and visual QA report only
+  - backend generates preview graph and visual QA report
+  - human-in-the-loop moderation is enabled in development mode:
+    - adjust cluster priority
+    - rename clusters
+    - include/exclude cluster selections
   - if quality fails, user returns to Step 4 (or Step 3 for policy changes)
 - Exit criteria:
   - preview job reaches terminal state (`succeeded` or `failed`)
+  - moderation snapshot revision persisted
   - preview artifacts + QA report persisted
 
-### Step 6: Complete (compile/export)
+### Step 6: Pre-Export Gate (development) / Complete (production)
 - Inputs:
-  - approved preview outputs
+  - approved preview outputs + moderation revision
   - locked CPM + settings revisions
 - Required behavior:
-  - compile/export job produces artifact manifest
+  - development phase default: step is pre-export review (human sign-off), not auto-export
+  - production phase: compile/export job produces artifact manifest after explicit human approval
   - output package can be downloaded and audited
 - Exit criteria:
-  - compile job terminal state and artifact manifest with signed checksums
+  - development phase: pre-export approval stored
+  - production phase: compile job terminal state and artifact manifest with signed checksums
 
 ## 5. Error handling expectations
 - Every asynchronous job has:
@@ -126,6 +138,16 @@ The frontend can move faster than backend implementation, but all integration be
   - provider used,
   - tokens consumed (prompt/completion/total when available),
   - estimated or final billed amount.
+
+## 5.2 Backend-driven provider options (required)
+- Backend is the source of truth for provider/model option catalog.
+- Frontend must fetch provider capabilities and render only returned options.
+- Frontend must not hardcode, infer, or guess provider-specific injection/model settings.
+- Provider option payload must include:
+  - option id and label,
+  - availability status,
+  - policy constraints (latency/cost/quality bands),
+  - consent requirements.
 
 ## 6. Auditability and drift prevention
 - All frontend integration changes must:
