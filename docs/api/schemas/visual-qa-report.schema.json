@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/tigges/FLOW_WIZARD/main/docs/api/schemas/visual-qa-report.schema.json",
+  "title": "Visual QA Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reportId",
+    "sessionId",
+    "previewJobId",
+    "summary",
+    "findings",
+    "generatedAt"
+  ],
+  "properties": {
+    "reportId": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "previewJobId": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score", "passed", "totalFindings", "criticalFindings"],
+      "properties": {
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "totalFindings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "criticalFindings": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["findingId", "severity", "message", "target"],
+        "properties": {
+          "findingId": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["info", "warning", "critical"]
+          },
+          "message": {
+            "type": "string"
+          },
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "id"],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": ["page", "node", "edge", "asset"]
+              },
+              "id": {
+                "type": "string"
+              }
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["label", "url"],
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          },
+          "suggestedFix": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

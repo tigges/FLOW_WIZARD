@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/tigges/FLOW_WIZARD/main/docs/api/schemas/session.schema.json",
+  "title": "Import Wizard Session",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sessionId",
+    "status",
+    "currentStep",
+    "createdAt",
+    "updatedAt",
+    "files",
+    "checkpoints"
+  ],
+  "properties": {
+    "sessionId": {
+      "type": "string",
+      "pattern": "^ses_[A-Za-z0-9_-]{8,}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "complete", "failed", "canceled"]
+    },
+    "currentStep": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 6
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fileId",
+          "displayName",
+          "mimeType",
+          "sizeBytes",
+          "sha256",
+          "sourceType",
+          "uploadStatus"
+        ],
+        "properties": {
+          "fileId": {
+            "type": "string",
+            "pattern": "^fil_[A-Za-z0-9_-]{8,}$"
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": ["primary", "reference"]
+          },
+          "originalUri": {
+            "type": "string",
+            "description": "Optional source URI; local references are compared by fileId after upload."
+          },
+          "uploadStatus": {
+            "type": "string",
+            "enum": ["uploaded", "ready", "failed"]
+          }
+        }
+      }
+    },
+    "checkpoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["upload", "pageMap", "settings", "review", "preview", "complete"],
+      "properties": {
+        "upload": { "$ref": "#/$defs/checkpointStatus" },
+        "pageMap": { "$ref": "#/$defs/checkpointStatus" },
+        "settings": { "$ref": "#/$defs/checkpointStatus" },
+        "review": { "$ref": "#/$defs/checkpointStatus" },
+        "preview": { "$ref": "#/$defs/checkpointStatus" },
+        "complete": { "$ref": "#/$defs/checkpointStatus" }
+      }
+    }
+  },
+  "$defs": {
+    "checkpointStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "updatedAt"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["not_started", "in_progress", "ready", "blocked", "done"]
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

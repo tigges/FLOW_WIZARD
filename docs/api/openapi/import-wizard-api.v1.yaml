@@ -1,0 +1,418 @@
+openapi: 3.1.0
+info:
+  title: Import Wizard API
+  version: 1.0.0
+  description: |
+    API contract for the frontend-first Import Wizard flow.
+    Step sequence:
+    1) Upload
+    2) Page map
+    3) Settings
+    4) Review (CPM patch)
+    5) Preview + Visual QA (preview only)
+    6) Complete (compile/export)
+servers:
+  - url: https://api.example.com
+tags:
+  - name: Sessions
+  - name: Uploads
+  - name: PageMap
+  - name: Settings
+  - name: CPM
+  - name: Jobs
+  - name: Artifacts
+paths:
+  /v1/import-wizard/sessions:
+    post:
+      tags: [Sessions]
+      summary: Create session
+      operationId: createSession
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        "201":
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/session.schema.json"
+
+  /v1/import-wizard/sessions/{sessionId}:
+    get:
+      tags: [Sessions]
+      summary: Get session
+      operationId: getSession
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Session
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/session.schema.json"
+
+  /v1/import-wizard/sessions/{sessionId}/files:
+    post:
+      tags: [Uploads]
+      summary: Upload source or reference file
+      description: |
+        Local references (`file:///...`) must be uploaded first and mapped to backend `fileId`.
+      operationId: uploadFile
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                kind:
+                  type: string
+                  enum: [source, reference]
+      responses:
+        "201":
+          description: Uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [fileId, checksum, status]
+                properties:
+                  fileId:
+                    type: string
+                  checksum:
+                    type: string
+                  status:
+                    type: string
+                    enum: [ready]
+
+  /v1/import-wizard/sessions/{sessionId}/page-map:
+    get:
+      tags: [PageMap]
+      summary: Get page map
+      operationId: getPageMap
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Page map
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/page-map.schema.json"
+    put:
+      tags: [PageMap]
+      summary: Upsert page map
+      operationId: upsertPageMap
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/page-map.schema.json"
+      responses:
+        "200":
+          description: Persisted page map
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/page-map.schema.json"
+
+  /v1/import-wizard/sessions/{sessionId}/settings:
+    get:
+      tags: [Settings]
+      summary: Get settings revision
+      operationId: getSettings
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/settings.schema.json"
+    put:
+      tags: [Settings]
+      summary: Replace settings revision
+      description: |
+        Client must send providerPolicy; direct model keys are not accepted.
+      operationId: putSettings
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/settings.schema.json"
+      responses:
+        "200":
+          description: Settings persisted
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/settings.schema.json"
+
+  /v1/import-wizard/sessions/{sessionId}/cpm:
+    get:
+      tags: [CPM]
+      summary: Get CPM
+      operationId: getCpm
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Canonical project model
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/cpm.schema.json"
+
+  /v1/import-wizard/sessions/{sessionId}/cpm:patch:
+    post:
+      tags: [CPM]
+      summary: Apply JSON Patch operations to CPM
+      description: |
+        Step 4 edits must be patch operations only.
+      operationId: patchCpm
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [baseRevision, operations]
+              properties:
+                baseRevision:
+                  type: integer
+                  minimum: 0
+                operations:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required: [op, path]
+                    properties:
+                      op:
+                        type: string
+                        enum: [add, remove, replace, move, copy, test]
+                      path:
+                        type: string
+                      from:
+                        type: string
+                      value: {}
+      responses:
+        "200":
+          description: CPM patch result
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [revision, cpm, operationResults]
+                properties:
+                  revision:
+                    type: integer
+                  cpm:
+                    $ref: "../schemas/cpm.schema.json"
+                  operationResults:
+                    type: array
+                    items:
+                      type: object
+                      required: [index, status]
+                      properties:
+                        index:
+                          type: integer
+                        status:
+                          type: string
+                          enum: [applied, failed]
+                        error:
+                          type: object
+
+  /v1/import-wizard/sessions/{sessionId}/preview-jobs:
+    post:
+      tags: [Jobs]
+      summary: Start preview + visual QA job
+      description: |
+        Step 5 is preview-only. This endpoint must not trigger primary extraction.
+      operationId: createPreviewJob
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cpmRevision, settingsRevision]
+              properties:
+                cpmRevision:
+                  type: integer
+                settingsRevision:
+                  type: integer
+      responses:
+        "202":
+          description: Preview job accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [jobId, type, state]
+                properties:
+                  jobId:
+                    type: string
+                  type:
+                    type: string
+                    enum: [preview]
+                  state:
+                    type: string
+                    enum: [queued, running, succeeded, failed, canceled]
+
+  /v1/import-wizard/sessions/{sessionId}/compile-jobs:
+    post:
+      tags: [Jobs]
+      summary: Start compile/export job
+      operationId: createCompileJob
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cpmRevision, settingsRevision]
+              properties:
+                cpmRevision:
+                  type: integer
+                settingsRevision:
+                  type: integer
+      responses:
+        "202":
+          description: Compile job accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [jobId, type, state]
+                properties:
+                  jobId:
+                    type: string
+                  type:
+                    type: string
+                    enum: [compile]
+                  state:
+                    type: string
+                    enum: [queued, running, succeeded, failed, canceled]
+
+  /v1/import-wizard/sessions/{sessionId}/jobs/{jobId}:
+    get:
+      tags: [Jobs]
+      summary: Get job status
+      operationId: getJobStatus
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+        - $ref: "#/components/parameters/JobId"
+      responses:
+        "200":
+          description: Job status
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [jobId, type, state]
+                properties:
+                  jobId:
+                    type: string
+                  type:
+                    type: string
+                    enum: [preview, compile]
+                  state:
+                    type: string
+                    enum: [queued, running, succeeded, failed, canceled]
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                      retryable:
+                        type: boolean
+
+  /v1/import-wizard/sessions/{sessionId}/preview-graph:
+    get:
+      tags: [Jobs]
+      summary: Get preview graph
+      operationId: getPreviewGraph
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Preview graph
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/preview-graph.schema.json"
+
+  /v1/import-wizard/sessions/{sessionId}/visual-qa-report:
+    get:
+      tags: [Jobs]
+      summary: Get visual QA report
+      operationId: getVisualQaReport
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Visual QA report
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/visual-qa-report.schema.json"
+
+  /v1/import-wizard/sessions/{sessionId}/artifact-manifest:
+    get:
+      tags: [Artifacts]
+      summary: Get compile artifact manifest
+      operationId: getArtifactManifest
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+      responses:
+        "200":
+          description: Artifact manifest
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/artifact-manifest.schema.json"
+
+components:
+  parameters:
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema:
+        type: string
+    JobId:
+      name: jobId
+      in: path
+      required: true
+      schema:
+        type: string

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tigges/FLOW_WIZARD/docs/api/schemas/settings.schema.json",
+  "title": "Import Wizard Settings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sessionId",
+    "revision",
+    "providerPolicy",
+    "options",
+    "updatedAt"
+  ],
+  "properties": {
+    "sessionId": {
+      "type": "string",
+      "pattern": "^ses_[A-Za-z0-9_-]{8,}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "providerPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strategy",
+        "qualityTier"
+      ],
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": [
+            "balanced",
+            "cost-first",
+            "quality-first",
+            "latency-first"
+          ]
+        },
+        "qualityTier": {
+          "type": "string",
+          "enum": [
+            "standard",
+            "high",
+            "max"
+          ]
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "maxLatencyMs": {
+              "type": "integer",
+              "minimum": 100
+            },
+            "maxCostUsd": {
+              "type": "number",
+              "minimum": 0
+            },
+            "allowFallback": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pageDetectionMode",
+        "theme",
+        "namingStyle"
+      ],
+      "properties": {
+        "pageDetectionMode": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "manual"
+          ]
+        },
+        "theme": {
+          "type": "string",
+          "enum": [
+            "source-aware",
+            "brand-default"
+          ]
+        },
+        "namingStyle": {
+          "type": "string",
+          "enum": [
+            "slug",
+            "human-readable"
+          ]
+        }
+      }
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
