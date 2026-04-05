@@ -1,7 +1,15 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_BASE = import.meta.env.VITE_API_URL || "";
+const USE_PROXY = import.meta.env.VITE_USE_PROXY === "true";
+
+function buildUrl(path: string): string {
+  if (USE_PROXY) {
+    return `${API_BASE}/api.php?path=${encodeURIComponent(path)}`;
+  }
+  return `${API_BASE}${path}`;
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(buildUrl(path), {
     ...init,
     headers: {
       "Content-Type": "application/json",
