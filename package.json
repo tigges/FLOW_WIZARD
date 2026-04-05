@@ -1,0 +1,36 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "FLOW_WIZARD",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "lint:openapi": "redocly lint docs/api/openapi/import-wizard-api.v1.yaml",
+    "validate:schemas": "node scripts/validate-schemas.js",
+    "validate:mocks": "node scripts/validate-mocks.js",
+    "test": "npm run lint:openapi && npm run validate:schemas && npm run validate:mocks",
+    "docs:build": "redocly build-docs docs/api/openapi/import-wizard-api.v1.yaml -o docs/api-reference.html",
+    "docs:serve": "http-server docs -p 8080 -c-1 --cors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tigges/FLOW_WIZARD.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tigges/FLOW_WIZARD/issues"
+  },
+  "homepage": "https://github.com/tigges/FLOW_WIZARD#readme",
+  "devDependencies": {
+    "@apidevtools/swagger-parser": "^12.1.0",
+    "@redocly/cli": "^2.25.4",
+    "ajv": "^8.18.0",
+    "ajv-draft-04": "^1.0.0",
+    "ajv-formats": "^3.0.1",
+    "http-server": "^14.1.1"
+  }
+}
