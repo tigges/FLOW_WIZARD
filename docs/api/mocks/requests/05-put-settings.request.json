@@ -8,12 +8,16 @@
     "consentTtlMinutes": 30
   },
   "providerPolicy": {
+    "provider": "auto",
+    "capabilityVersion": "provider-catalog-2026-04-05",
+    "selectionSource": "backend-capabilities",
     "strategy": "balanced",
     "qualityTier": "high",
     "constraints": {
       "maxLatencyMs": 2500,
       "maxCostUsd": 7.5,
-      "allowFallback": true
+      "allowFallback": true,
+      "requireUserConfirmation": true
     }
   },
   "providerPreferences": {
@@ -23,7 +27,8 @@
   "options": {
     "pageDetectionMode": "auto",
     "theme": "source-aware",
-    "namingStyle": "human-readable"
+    "namingStyle": "human-readable",
+    "moderationMode": "development-human-in-loop"
   },
   "updatedAt": "2026-04-05T11:16:00Z"
 }

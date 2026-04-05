@@ -17,8 +17,8 @@ All fixtures align to:
 2. Page map
 3. Settings
 4. Review (CPM patch ops only)
-5. Preview + Visual QA (preview-only, no extraction)
-6. Complete (compile/export)
+5. Preview + Visual QA + moderation (development mode)
+6. Pre-view completion gate (development) -> Complete/export (production mode)
 
 ## Rules encoded in mocks
 1. Step 5 never performs primary extraction.
@@ -26,3 +26,4 @@ All fixtures align to:
 3. Model selection is represented by `providerPolicy`, not direct model keys.
 4. Local references are uploaded and compared by `fileId`.
 5. Any token-billed provider call requires explicit per-action user consent.
+6. Provider/model options are backend-driven via a capabilities payload.

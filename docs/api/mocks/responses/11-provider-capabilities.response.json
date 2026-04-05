@@ -1,0 +1,23 @@
+{
+  "version": "2026-04-05.1",
+  "providers": [
+    {
+      "provider": "gemini",
+      "enabled": true,
+      "modelFamilies": ["gemini-2.5-flash", "gemini-2.5-pro"],
+      "notes": "Default provider for document/text import enrichment."
+    },
+    {
+      "provider": "copilot",
+      "enabled": true,
+      "modelFamilies": ["copilot-chat-compatible"],
+      "notes": "Optional fallback path when enabled by policy."
+    },
+    {
+      "provider": "internal",
+      "enabled": true,
+      "modelFamilies": ["deterministic-rules-engine"],
+      "notes": "Zero-cost deterministic fallback."
+    }
+  ]
+}

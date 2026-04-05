@@ -1,19 +1,35 @@
 {
   "sessionId": "ses_01HZX9Q7QF0F5S6YCC3H3WZ6JH",
   "revision": 3,
+  "aiUsageGuard": {
+    "requireUserConsentBeforeExecution": true,
+    "showEstimateBeforeExecution": true,
+    "hardBlockWithoutConsent": true,
+    "consentTtlMinutes": 30
+  },
   "providerPolicy": {
+    "provider": "gemini",
+    "capabilityVersion": "2026-04-05.v1",
+    "selectionSource": "backend-capabilities",
     "strategy": "balanced",
     "qualityTier": "high",
     "constraints": {
       "maxLatencyMs": 5000,
       "maxCostUsd": 2.5,
-      "allowFallback": true
+      "allowFallback": true,
+      "requireUserConfirmation": true
     }
+  },
+  "providerSelection": {
+    "source": "backend-capabilities",
+    "selectedProvider": "gemini",
+    "fallbackProvider": "copilot"
   },
   "options": {
     "pageDetectionMode": "auto",
     "theme": "source-aware",
-    "namingStyle": "human-readable"
+    "namingStyle": "human-readable",
+    "moderationMode": "development-human-in-loop"
   },
   "updatedAt": "2026-04-05T12:05:55Z"
 }

@@ -14,9 +14,10 @@ Keep FLOW_WIZARD as the single source of truth while frontend delivery leads and
 2. **Mock parity:** every new endpoint/field needs a matching mock request/response fixture.
 3. **Backend lag is allowed, drift is not:** backend can return stubbed values but shape and semantics must match contract.
 4. **Step rules are non-negotiable:**
-   - Step 4 updates CPM via patch operations.
-   - Step 5 is preview-only and visual QA, not extraction.
-   - Model selection uses `providerPolicy`, never direct client model keys.
+   - Step 4 updates CPM via patch operations at `/v1/import-wizard/sessions/{sessionId}/cpm/patch`.
+   - Step 5 is human-moderated preview planning (development mode) and must not run primary extraction.
+   - Step 6 is human-moderated pre-export review and compile planning until production hardening is complete.
+   - Model/provider options are backend-driven; frontend must not guess available providers or model families.
    - `file:///...` references are uploaded and resolved to `fileId` before comparison.
 5. **Spend transparency is required:** no AI provider call may execute unless:
    - the initiating actor (user or admin-configured policy) explicitly approved the call scope,
